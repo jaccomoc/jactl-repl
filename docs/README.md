@@ -105,3 +105,7 @@ These are the commands:
  | `:H n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
  | `:! n`                   | Recall history entry `n` and evaluate it.                                                                 |
 
+## History File
+
+The command line history is persisted in a file called `.jacsal_history` in your home directory.
+A maximum of 10000 lines is kept.
