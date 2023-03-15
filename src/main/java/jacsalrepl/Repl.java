@@ -51,6 +51,7 @@ import static org.jline.builtins.Completers.TreeCompleter.node;
 public class Repl {
 
   final static String helpText =
+    "Available commands:\n" +
     "  :h       Help - print this text\n" +
     "  :?       Alias for :h\n" +
     "  :x       Exit\n" +
@@ -82,6 +83,8 @@ public class Repl {
                                          .variable(LineReader.HISTORY_FILE_SIZE, 10000)
                                          .variable(LineReader.HISTORY_SIZE, 10000)
                                          .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
+                                         .option(LineReader.Option.HISTORY_IGNORE_SPACE, false)
+                                         .option(LineReader.Option.HISTORY_REDUCE_BLANKS, false)
                                          .history(history)
                                          .completer(completer)
                                          .build();
@@ -104,9 +107,9 @@ public class Repl {
           switch(trimmedLine.charAt(1)) {
             case 'q':  /* alias for x */
             case 'x':  System.exit(0);
-            case 'c':  prompt = primaryPrompt; buffer = null; continue;
+            case 'c':  prompt = primaryPrompt; buffer = null;     continue;
             case '?':  /* alias for h */
-            case 'h':  System.out.println(helpText);          continue;
+            case 'h':  System.out.println("\n" + helpText);       continue;
           }
           if (prompt.equals(primaryPrompt)) {
             String arg = trimmedLine.replaceAll("^:.\\s*","");
