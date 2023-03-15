@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group   'jacsal'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation('jacsal:jacsal:1.0-SNAPSHOT') {
+        exclude group:'org.ow2.asm'
+    }
+    implementation 'org.jline:jline:3.21.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    duplicatesStrategy 'exclude'
+    manifest {
+        attributes "Main-Class": "jacsalrepl.Repl"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
