@@ -58,13 +58,17 @@ Other keybindings map to common keybindings used by shells such as `bash` or `zs
 
 The main ones to remember:
 
-| Key Binding   | Description                                                                                                                                                                                                                                            |
-|:--------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `<ctrl>-A`    | Beginning of line                                                                                                                                                                                                                                      |
- | `<ctrl>-E`    | End of line                                                                                                                                                                                                                                            |
-| `<ctrl>-R`    | Search backwards for previous matching input line (incremental search based on characters entered after the `<ctrl>-R`).<br/>Once searching has started `<ctrl>-R` will continue searching for the previous matching entry to the one being displayed. |
- | `<ctrl>-L`    | Clear the screen                                                                                                                                                                                                                                       | 
- | `<ctrl>-U`    | Discard characters currently typed on the line                                                                                                                                                                                                         |
+| Key Binding                      | Description                                                                                                                                                                                                                                            |
+|:---------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `<up-arrow>`<br/>`<ctrl-P>`      | Previous input line                                                                                                                                                                                                                                    |
+| `<down-arrow>`<br/>`<ctrl-N>`    | Next input line
+| `<left-arrow>`<br/>`<ctrl-B>`    | Previous character
+| `<right-arrrow>`<br/>`<ctrl-F>`  | Next character
+| `<ctrl-A>`                       | Beginning of line                                                                                                                                                                                                                                      |
+ | `<ctrl-E>`                       | End of line                                                                                                                                                                                                                                            |
+| `<ctrl-R>`                       | Search backwards for previous matching input line (incremental search based on characters entered after the `<ctrl-R>`).<br/>Once searching has started `<ctrl-R>` will continue searching for the previous matching entry to the one being displayed. |
+ | `<ctrl-L>`                       | Clear the screen                                                                                                                                                                                                                                       | 
+ | `<ctrl-U>`                       | Discard characters currently typed on the line                                                                                                                                                                                                         |
 
 ## Commands
 
