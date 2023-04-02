@@ -17,18 +17,14 @@
 
 package jacsalrepl;
 
-import jacsal.JacsalContext;
+import jacsal.*;
 import jacsal.Compiler;
-import jacsal.EOFError;
-import jacsal.JacsalError;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
-import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.reader.impl.completer.SystemCompleter;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
@@ -37,16 +33,11 @@ import jacsal.runtime.RuntimeUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import java.util.*;
 
 public class Repl {
 
@@ -62,37 +53,53 @@ public class Repl {
     "  :s       Show variables and their values (concise form)\n" +
     "  :S       Show variables and their values in pretty printed form\n" +
     "  :p       Purge variables\n" +
+    "  :e arg   Enable/disable stack traces for errors (true - enable, false - disable)\n" +
     "  :H [n]   Show recent history (last n entries - defaults to 50)\n" +
     "  :! n     Recall history entry with given number\n";
 
-  final static String commands = "h?xqcrlsSpH!";
+  final static String commands    = "h?xqcrlsSpH!e";
+  final static String historyFile = System.getProperty("user.home") + "/.jacsal_history";
 
-  public static void main(String[] args) throws Exception {
-    Terminal terminal = TerminalBuilder.builder()
-                                       .system(true)
-                                       .build();
-    DefaultHistory history = new DefaultHistory();
-    var completer = new SystemCompleter();
-    completer.add(":r", new Completers.FileNameCompleter());
-    commands.chars().forEach(c -> completer.add(":" + (char)c, new NullCompleter()));
-    completer.add("", new NullCompleter());
-    completer.compile();
-    LineReader reader = LineReaderBuilder.builder()
-                                         .terminal(terminal)
-                                         .variable(LineReader.HISTORY_FILE, System.getProperty("user.home") + "/.jacsal_history")
-                                         .variable(LineReader.HISTORY_FILE_SIZE, 10000)
-                                         .variable(LineReader.HISTORY_SIZE, 10000)
-                                         .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
-                                         .option(LineReader.Option.HISTORY_IGNORE_SPACE, false)
-                                         .option(LineReader.Option.HISTORY_REDUCE_BLANKS, false)
-                                         .history(history)
-                                         .completer(completer)
+  public static void main(String[] args) {
+    try {
+      JacsalEnv     env      = JacsalOptions.initOptions().getEnvironment();
+      JacsalContext context  = JacsalContext.create().environment(env).replMode(true).build();
+
+      Terminal terminal = TerminalBuilder.builder()
+                                         .system(true)
                                          .build();
+      DefaultHistory history = new DefaultHistory();
+      var completer = new SystemCompleter();
+      completer.add(":r", new Completers.FileNameCompleter());
+      commands.chars().forEach(c -> completer.add(":" + (char)c, new NullCompleter()));
+      completer.add("", new NullCompleter());
+      completer.compile();
+      LineReader reader = LineReaderBuilder.builder()
+                                           .terminal(terminal)
+                                           .variable(LineReader.HISTORY_FILE, historyFile)
+                                           .variable(LineReader.HISTORY_FILE_SIZE, 10000)
+                                           .variable(LineReader.HISTORY_SIZE, 10000)
+                                           .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
+                                           .option(LineReader.Option.HISTORY_IGNORE_SPACE, false)
+                                           .option(LineReader.Option.HISTORY_REDUCE_BLANKS, false)
+                                           .history(history)
+                                           .completer(completer)
+                                           .build();
 
-    JacsalContext      context = JacsalContext.create().replMode(true).build();
-    Map<String,Object> globals = new HashMap<>();
-    String             buffer  = null;
-    final String primaryPrompt = "> ";
+      runRepl(context, history, reader);
+    }
+    catch (Exception e) {
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+
+  private static void runRepl(JacsalContext context, DefaultHistory history, LineReader reader) {
+    final String       primaryPrompt   = "> ";
+    boolean            showStackTraces = false;
+    Map<String,Object> globals         = new HashMap<>();
+    String             buffer          = null;
     String prompt = primaryPrompt;
     while (true) {
       boolean fileInput = false;
@@ -114,8 +121,9 @@ public class Repl {
           if (prompt.equals(primaryPrompt)) {
             String arg = trimmedLine.replaceAll("^:.\\s*","");
             switch (trimmedLine.charAt(1)) {
-              case 's': globals.forEach((key,value) -> System.out.println(key + "=" + RuntimeUtils.toString(value)));           continue;
-              case 'S': globals.forEach((key,value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
+              case 'e': showStackTraces = Boolean.valueOf(arg); continue;
+              case 's': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value)));           continue;
+              case 'S': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
               case 'p': globals.clear();   continue;
               case 'l': /* alias for r */
               case 'r': line = Files.readString(Path.of(arg));  fileInput = true;  break;
@@ -123,7 +131,7 @@ public class Repl {
                 int count = arg.isEmpty() ? 50 : Integer.parseInt(arg);
                 int last = history.last();
                 for (int i = 0; i < count; i++) {
-                  System.out.println((last-count+i) + ": " + history.get(last-count+i));
+                  System.out.println((last-count+i) + ": " + history.get(last - count + i));
                 }
                 continue;
               case '!': {
@@ -148,7 +156,7 @@ public class Repl {
       }
       catch (EOFError e) {
         // Keep buffer and add lines to it if we get EOF error during compile from command line.
-        // Otherwise treat as normal error
+        // Otherwise, treat as normal error
         if (fileInput) {
           System.out.println(e.getMessage());
           buffer = null;
@@ -157,6 +165,9 @@ public class Repl {
       }
       catch (JacsalError e) {
         System.out.println(e.getMessage());
+        if (showStackTraces) {
+          e.printStackTrace();
+        }
         buffer = null;
         prompt = primaryPrompt;
       }
@@ -171,6 +182,9 @@ public class Repl {
       }
       catch (Exception e) {
         System.out.println(e.getMessage());
+        if (showStackTraces) {
+          e.printStackTrace();
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 # Jacsal-Repl
 
-The Jacsal-Repl project is a command line shell for [Jacsal](https://github.com/jaccomoc/jacsal) scripting
+The Jacsal-Repl project is a command line shell for the [Jacsal](https://github.com/jaccomoc/jacsal) scripting
 language.
 It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jacsal scripts, using the excellent
 [JLine](https://github.com/jline/jline3) for command line editing and history.
@@ -24,7 +24,7 @@ cd jacsal-repl
 
 That will build `jacsal-repl-1.0.jar` under the `build/libs` directory.
 
-# Running
+## Running
 
 To run the REPL:
 ```shell
@@ -70,7 +70,7 @@ The main ones to remember:
  | `<ctrl-L>`                       | Clear the screen                                                                                                                                                                                                                                       | 
  | `<ctrl-U>`                       | Discard characters currently typed on the line                                                                                                                                                                                                         |
 
-## Commands
+### Commands
 
 As well as entering Jacsal code at the prompt, the REPL understands a limit set of commands that all start with `:`.
 For example, `:h` or `:?` will print out the help text listing the commands available:
@@ -109,7 +109,15 @@ These are the commands:
  | `:H n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
  | `:! n`                   | Recall history entry `n` and evaluate it.                                                                 |
 
-## History File
+### History File
 
 The command line history is persisted in a file called `.jacsal_history` in your home directory.
 A maximum of 10000 lines is kept.
+
+## `.jacsalrc` File
+
+At start up time the contents of `~/.jacsalrc` are read.
+This file, if it exists, is itself a Jacsal script and allows you to customise the behaviour of the Jacsal REPL
+by setting the values of some global variables.
+This file is also used when running Jacsal scripts from the command line and is documented in the Jacsal project
+documentation here: [.jacsal File](https://github.com/jaccomoc/jacsal/pages/command-line-scripts.html#.jacsal-file).
