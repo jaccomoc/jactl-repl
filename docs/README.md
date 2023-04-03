@@ -1,8 +1,8 @@
-# Jacsal-Repl
+# Jactl-Repl
 
-The Jacsal-Repl project is a command line shell for the [Jacsal](https://github.com/jaccomoc/jacsal) scripting
+The Jactl-Repl project is a command line shell for the [Jactl](https://github.com/jaccomoc/jactl) scripting
 language.
-It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jacsal scripts, using the excellent
+It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jactl scripts, using the excellent
 [JLine](https://github.com/jline/jline3) for command line editing and history.
 
 # Building
@@ -11,34 +11,34 @@ It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jacsal
 
 * Java 11+
 * JLine 3.21.0
-* Jacsal 1.0
+* Jactl 1.0
 * Gradle 8.0.2
 
 ## Build
 
 ```shell
-git clone https://github.com/jaccomoc/jacsal-repl.git
-cd jacsal-repl
+git clone https://github.com/jaccomoc/jactl-repl.git
+cd jactl-repl
 ./gradlew build
 ```
 
-That will build `jacsal-repl-1.0.jar` under the `build/libs` directory.
+That will build `jactl-repl-1.0.jar` under the `build/libs` directory.
 
 ## Running
 
 To run the REPL:
 ```shell
-java -jar jacsal-repl-1.0.jar
+java -jar jactl-repl-1.0.jar
 ```
 
-This will present a single `> ` prompt where you can enter Jacsal code that will be compiled, executed, and the
+This will present a single `> ` prompt where you can enter Jactl code that will be compiled, executed, and the
 result printed out.
 If the code looks like it continues on a subsequent line, the REPL will output two spaces and wait for the additional
 code to be entered.
 
 For example:
 ```groovy
-$ java -jar jacsal-repl-1.0.jar
+$ java -jar jactl-repl-1.0.jar
 > def isPrime(n) { n > 1 && !n.sqrt().filter{ it > 0 && n % (it+1) == 0 } }
 Function@1864869682
 > def primes = 100.map{ it + 1 }.filter(isPrime)
@@ -72,10 +72,10 @@ The main ones to remember:
 
 ### Commands
 
-As well as entering Jacsal code at the prompt, the REPL understands a limit set of commands that all start with `:`.
+As well as entering Jactl code at the prompt, the REPL understands a limit set of commands that all start with `:`.
 For example, `:h` or `:?` will print out the help text listing the commands available:
 ```
-$ java -jar build/libs/jacsal-repl-1.0-SNAPSHOT.jar
+$ java -jar build/libs/jactl-repl-1.0-SNAPSHOT.jar
 > :h
 
 Available commands:
@@ -102,7 +102,7 @@ These are the commands:
 | `:h` `:?`                | Print help text.                                                                                          |
 | `:x` `:q`                | Exit.                                                                                                     |
 | `:c`                     | In the middle of a multi-line statement this will clear the buffer and allow you to start again.          |
-| `:r file`<br/> `:l file` | Read/load a Jacsal script file and compile and run it. Tab completion is availabe for the file name.      |
+| `:r file`<br/> `:l file` | Read/load a Jactl script file and compile and run it. Tab completion is availabe for the file name.      |
 | `:s`                     | Show all top level variables and their values.                                                            |
  | `:S`                     | Show all top level variables and pretty print their values                                                |
  | `:p`                     | Purge (delete) all variables.                                                                             |
@@ -111,13 +111,13 @@ These are the commands:
 
 ### History File
 
-The command line history is persisted in a file called `.jacsal_history` in your home directory.
+The command line history is persisted in a file called `.jactl_history` in your home directory.
 A maximum of 10000 lines is kept.
 
-## `.jacsalrc` File
+## `.jactlrc` File
 
-At start up time the contents of `~/.jacsalrc` are read.
-This file, if it exists, is itself a Jacsal script and allows you to customise the behaviour of the Jacsal REPL
+At start up time the contents of `~/.jactlrc` are read.
+This file, if it exists, is itself a Jactl script and allows you to customise the behaviour of the Jactl REPL
 by setting the values of some global variables.
-This file is also used when running Jacsal scripts from the command line and is documented in the Jacsal project
-documentation here: [.jacsal File](https://github.com/jaccomoc/jacsal/pages/command-line-scripts.html#.jacsal-file).
+This file is also used when running Jactl scripts from the command line and is documented in the Jactl project
+documentation here: [.jactl File](https://github.com/jaccomoc/jactl/pages/command-line-scripts.html#.jactl-file).

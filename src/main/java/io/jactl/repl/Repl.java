@@ -15,10 +15,11 @@
  *
  */
 
-package jacsalrepl;
+package io.jactl.repl;
 
-import jacsal.*;
-import jacsal.Compiler;
+import io.jactl.*;
+import io.jactl.Compiler;
+import io.jactl.runtime.RuntimeUtils;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -29,12 +30,8 @@ import org.jline.reader.impl.completer.SystemCompleter;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import jacsal.runtime.RuntimeUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -58,12 +55,12 @@ public class Repl {
     "  :! n     Recall history entry with given number\n";
 
   final static String commands    = "h?xqcrlsSpH!e";
-  final static String historyFile = System.getProperty("user.home") + "/.jacsal_history";
+  final static String historyFile = System.getProperty("user.home") + "/.jactl_history";
 
   public static void main(String[] args) {
     try {
-      JacsalEnv     env      = JacsalOptions.initOptions().getEnvironment();
-      JacsalContext context  = JacsalContext.create().environment(env).replMode(true).build();
+      JactlEnv     env      = JactlOptions.initOptions().getEnvironment();
+      JactlContext context  = JactlContext.create().environment(env).replMode(true).build();
 
       Terminal terminal = TerminalBuilder.builder()
                                          .system(true)
@@ -95,7 +92,7 @@ public class Repl {
     }
   }
 
-  private static void runRepl(JacsalContext context, DefaultHistory history, LineReader reader) {
+  private static void runRepl(JactlContext context, DefaultHistory history, LineReader reader) {
     final String       primaryPrompt   = "> ";
     boolean            showStackTraces = false;
     Map<String,Object> globals         = new HashMap<>();
@@ -163,7 +160,7 @@ public class Repl {
           prompt = primaryPrompt;
         }
       }
-      catch (JacsalError e) {
+      catch (JactlError e) {
         System.out.println(e.getMessage());
         if (showStackTraces) {
           e.printStackTrace();

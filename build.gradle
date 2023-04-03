@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group   'jacsal'
+group   'io.jactl'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -11,9 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation('jacsal:jacsal:1.0-SNAPSHOT') {
-        exclude group:'org.ow2.asm'
-    }
+    implementation('io.jactl:jactl:1.0-SNAPSHOT')
     implementation 'org.jline:jline:3.21.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -26,7 +24,7 @@ test {
 jar {
     duplicatesStrategy 'exclude'
     manifest {
-        attributes "Main-Class": "jacsalrepl.Repl"
+        attributes "Main-Class": "io.jactl.repl.Repl"
     }
 
     from {
