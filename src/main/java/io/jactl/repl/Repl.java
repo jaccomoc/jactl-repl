@@ -60,7 +60,8 @@ public class Repl {
   public static void main(String[] args) {
     try {
       JactlEnv     env      = JactlOptions.initOptions().getEnvironment();
-      JactlContext context  = JactlContext.create().environment(env).replMode(true).build();
+      JactlContext context  = JactlContext.create().environment(env).build();
+      Utils.setReplMode(context);
 
       Terminal terminal = TerminalBuilder.builder()
                                          .system(true)
@@ -144,7 +145,7 @@ public class Repl {
 
         prompt = "  ";
         buffer = buffer == null ? line : buffer + "\n" + line;
-        Object result = Compiler.run(buffer, context, globals);
+        Object result = Jactl.eval(buffer, globals, context);
         if (result != null) {
           System.out.println(RuntimeUtils.toString(result));
         }
