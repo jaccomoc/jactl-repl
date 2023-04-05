@@ -11,7 +11,7 @@ It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jactl 
 
 * Java 11+
 * JLine 3.21.0
-* Jactl 1.0
+* Jactl 1.0.0
 * Gradle 8.0.2
 
 ## Build
@@ -22,13 +22,13 @@ cd jactl-repl
 ./gradlew build
 ```
 
-That will build `jactl-repl-1.0.jar` under the `build/libs` directory.
+That will build `jactl-repl-1.0.0.jar` under the `build/libs` directory.
 
 ## Running
 
 To run the REPL:
 ```shell
-java -jar jactl-repl-1.0.jar
+java -jar jactl-repl-1.0.0.jar
 ```
 
 This will present a single `> ` prompt where you can enter Jactl code that will be compiled, executed, and the
@@ -38,7 +38,7 @@ code to be entered.
 
 For example:
 ```groovy
-$ java -jar jactl-repl-1.0.jar
+$ java -jar jactl-repl-1.0.0.jar
 > def isPrime(n) { n > 1 && !n.sqrt().filter{ it > 0 && n % (it+1) == 0 } }
 Function@1864869682
 > def primes = 100.map{ it + 1 }.filter(isPrime)
@@ -75,7 +75,7 @@ The main ones to remember:
 As well as entering Jactl code at the prompt, the REPL understands a limit set of commands that all start with `:`.
 For example, `:h` or `:?` will print out the help text listing the commands available:
 ```
-$ java -jar build/libs/jactl-repl-1.0-SNAPSHOT.jar
+$ java -jar build/libs/jactl-repl-1.0.0-SNAPSHOT.jar
 > :h
 
 Available commands:
