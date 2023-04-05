@@ -51,6 +51,7 @@ public class Repl {
     "  :S       Show variables and their values in pretty printed form\n" +
     "  :p       Purge variables\n" +
     "  :e arg   Enable/disable stack traces for errors (true - enable, false - disable)\n" +
+    "  :d level Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)\n" +
     "  :H [n]   Show recent history (last n entries - defaults to 50)\n" +
     "  :! n     Recall history entry with given number\n";
 
@@ -119,7 +120,8 @@ public class Repl {
           if (prompt.equals(primaryPrompt)) {
             String arg = trimmedLine.replaceAll("^:.\\s*","");
             switch (trimmedLine.charAt(1)) {
-              case 'e': showStackTraces = Boolean.valueOf(arg); continue;
+              case 'e': showStackTraces = Boolean.valueOf(arg);    continue;
+              case 'd': context.debugLevel(Integer.parseInt(arg)); continue;
               case 's': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value)));           continue;
               case 'S': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
               case 'p': globals.clear();   continue;
@@ -161,14 +163,6 @@ public class Repl {
           prompt = primaryPrompt;
         }
       }
-      catch (JactlError e) {
-        System.out.println(e.getMessage());
-        if (showStackTraces) {
-          e.printStackTrace();
-        }
-        buffer = null;
-        prompt = primaryPrompt;
-      }
       catch (IOException e) {
         System.out.println("Error accessing file: " + e.getMessage());
       }
@@ -183,6 +177,8 @@ public class Repl {
         if (showStackTraces) {
           e.printStackTrace();
         }
+        buffer = null;
+        prompt = primaryPrompt;
       }
     }
   }
