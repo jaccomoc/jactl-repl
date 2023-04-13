@@ -134,4 +134,4 @@ At start up time the contents of `~/.jactlrc` are read.
 This file, if it exists, is itself a Jactl script and allows you to customise the behaviour of the Jactl REPL
 by setting the values of some global variables.
 This file is also used when running Jactl scripts from the command line and is documented in the Jactl project
-documentation here: [.jactl File](https://github.com/jaccomoc/jactl/pages/command-line-scripts.html#.jactl-file).
+documentation here: [.jactl File](https://jactl.io/command-line-scripts#jactlrc-file).
