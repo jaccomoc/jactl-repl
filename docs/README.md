@@ -1,20 +1,29 @@
 # Jactl-Repl
 
-The Jactl-Repl project is a command line shell for the [Jactl](https://github.com/jaccomoc/jactl) scripting
+The Jactl-Repl project is a command line shell for the [Jactl](https://jactl.io) scripting
 language.
 It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jactl scripts, using the excellent
 [JLine](https://github.com/jline/jline3) for command line editing and history.
 
-# Building
+## Download
 
-## Requirements
+You can download the Jactl REPL jar file from Maven Central using this link:
+[https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.1.0/jactl-repl-1.1.0.jar](https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.1.0/jactl-repl-1.1.0.jar)
+
+Since it is built as a "fat" jar it can be run standalone (see [Running](#Running) section below).
+
+## Building
+
+### Requirements
 
 * Java 11+
 * JLine 3.21.0
 * Jactl 1.1.0
 * Gradle 8.0.2
 
-## Build
+### Build
+
+Download a zip file of the source from GitHub or use `git` to clone the repository: 
 
 ```shell
 git clone https://github.com/jaccomoc/jactl-repl.git
@@ -22,13 +31,14 @@ cd jactl-repl
 ./gradlew build
 ```
 
-That will build `jactl-repl-1.1.0.jar` under the `build/libs` directory.
+That will build `jactl-repl-${VERSION}.jar` under the `build/libs` directory where `${VERSION}` is the current version
+or the version of the tag/branch you are using.
 
 ## Running
 
 To run the REPL:
 ```shell
-java -jar jactl-repl-1.1.0.jar
+java -jar jactl-repl-${VERSION}.jar
 ```
 
 This will present a single `> ` prompt where you can enter Jactl code that will be compiled, executed, and the
@@ -38,7 +48,7 @@ code to be entered.
 
 For example:
 ```groovy
-$ java -jar jactl-repl-1.1.0.jar
+$ java -jar jactl-repl-${VERSION}.jar
 > def isPrime(n) { n > 1 && !n.sqrt().filter{ it > 0 && n % (it+1) == 0 } }
 Function@1864869682
 > def primes = 100.map{ it + 1 }.filter(isPrime)
@@ -113,7 +123,7 @@ These are the commands:
  | `:H n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
  | `:! n`                   | Recall history entry `n` and evaluate it.                                                                 |
 
-### History File
+## History File
 
 The command line history is persisted in a file called `.jactl_history` in your home directory.
 A maximum of 10000 lines is kept.

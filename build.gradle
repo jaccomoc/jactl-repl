@@ -1,17 +1,24 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group   'io.jactl'
-version '1.1-SNAPSHOT'
+version '1.1-0'
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 dependencies {
-    implementation('io.jactl:jactl:1.0-SNAPSHOT')
+    implementation('io.jactl:jactl:1.1.0')
     implementation 'org.jline:jline:3.21.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -32,3 +39,47 @@ jar {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'Jactl REPL'
+                description = 'Interactive Jactl shell'
+                url = 'https://github.com/jaccomoc/jactl-repl'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'jaccomoc'
+                        name = 'James Crawford'
+                        url = 'https://github.com/jaccomoc'
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com:jaccomoc/jactl-repl.git"
+                    developerConnection = "scm:git:git://github.com:jaccomoc/jactl-repl.git"
+                    url = 'https://github.com/jaccomoc/jactl-repl'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials(PasswordCredentials) {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
