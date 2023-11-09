@@ -18,7 +18,6 @@
 package io.jactl.repl;
 
 import io.jactl.*;
-import io.jactl.Compiler;
 import io.jactl.runtime.RuntimeUtils;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
