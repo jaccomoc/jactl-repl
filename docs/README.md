@@ -8,7 +8,7 @@ It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jactl 
 ## Download
 
 You can download the Jactl REPL jar file from Maven Central using this link:
-[https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.3.1/jactl-repl-1.3.1.jar](https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.3.1/jactl-repl-1.3.1.jar)
+[https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.4.0/jactl-repl-1.4.0.jar](https://repo1.maven.org/maven2/io/jactl/jactl-repl/1.4.0/jactl-repl-1.4.0.jar)
 
 Since it is built as a "fat" jar it can be run standalone (see [Running](#Running) section below).
 
@@ -16,9 +16,9 @@ Since it is built as a "fat" jar it can be run standalone (see [Running](#Runnin
 
 ### Requirements
 
-* Java 11+
+* Java 8+
 * JLine 3.21.0
-* Jactl 1.3.1
+* Jactl 1.4.0
 * Gradle 8.0.2
 
 ### Build
@@ -85,7 +85,7 @@ The main ones to remember:
 As well as entering Jactl code at the prompt, the REPL understands a limit set of commands that all start with `:`.
 For example, `:h` or `:?` will print out the help text listing the commands available:
 ```
-$ java -jar build/libs/jactl-repl-1.3.1-SNAPSHOT.jar
+$ java -jar build/libs/jactl-repl-1.4.0-SNAPSHOT.jar
 > :h
 
 Available commands:

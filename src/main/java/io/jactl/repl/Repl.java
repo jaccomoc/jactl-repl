@@ -33,6 +33,7 @@ import org.jline.terminal.TerminalBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Repl {
@@ -66,8 +67,8 @@ public class Repl {
       Terminal terminal = TerminalBuilder.builder()
                                          .system(true)
                                          .build();
-      DefaultHistory history = new DefaultHistory();
-      var completer = new SystemCompleter();
+      DefaultHistory  history   = new DefaultHistory();
+      SystemCompleter completer = new SystemCompleter();
       completer.add(":r", new Completers.FileNameCompleter());
       commands.chars().forEach(c -> completer.add(":" + (char)c, new NullCompleter()));
       completer.add("", new NullCompleter());
@@ -125,7 +126,7 @@ public class Repl {
               case 'S': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
               case 'p': globals.clear();   continue;
               case 'l': /* alias for r */
-              case 'r': line = Files.readString(Path.of(arg));  fileInput = true;  break;
+              case 'r': line = new String(Files.readAllBytes(Paths.get(arg)));  fileInput = true;  break;
               case 'H':
                 int count = arg.isEmpty() ? 50 : Integer.parseInt(arg);
                 int last = history.last();
