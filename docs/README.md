@@ -8,7 +8,7 @@ It provides a Read-Evaluate-Print-Loop execution shell for testing simple Jactl 
 ## Download
 
 You can download the Jactl REPL jar file from Maven Central using this link:
-[https://repo1.maven.org/maven2/io/jactl/jactl-repl/2.0.0/jactl-repl-2.0.0.jar](https://repo1.maven.org/maven2/io/jactl/jactl-repl/2.0.0/jactl-repl-2.0.0.jar)
+[https://repo1.maven.org/maven2/io/jactl/jactl-repl/2.2.0/jactl-repl-2.2.0.jar](https://repo1.maven.org/maven2/io/jactl/jactl-repl/2.2.0/jactl-repl-2.2.0.jar)
 
 Since it is built as a "fat" jar it can be run standalone (see [Running](#Running) section below).
 
@@ -18,7 +18,7 @@ Since it is built as a "fat" jar it can be run standalone (see [Running](#Runnin
 
 * Java 8+
 * JLine 3.21.0
-* Jactl 2.0.0
+* Jactl 2.2.0
 * Gradle 8.0.2
 
 ### Build

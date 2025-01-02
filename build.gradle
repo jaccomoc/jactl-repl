@@ -5,7 +5,7 @@ plugins {
 }
 
 group   'io.jactl'
-version '2.1.0'
+version '2.2.0'
 
 repositories {
     mavenLocal()
@@ -20,7 +20,7 @@ java {
 }
 
 dependencies {
-    implementation 'io.jactl:jactl:2.1.0'
+    implementation 'io.jactl:jactl:2.2.0'
     implementation 'org.jline:jline:3.21.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
