@@ -5,7 +5,7 @@ plugins {
 }
 
 group   'io.jactl'
-version '2.3.0'
+version '2.4.0'
 
 repositories {
     mavenLocal()
@@ -20,7 +20,7 @@ java {
 }
 
 dependencies {
-    implementation 'io.jactl:jactl:2.3.0'
+    implementation 'io.jactl:jactl:2.4.0'
     implementation 'org.jline:jline:3.21.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -71,7 +71,7 @@ publishing {
             }
         }
     }
-//    repositories {
+    repositories {
 //        maven {
 //            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 //            credentials(PasswordCredentials) {
@@ -79,9 +79,21 @@ publishing {
 //                password = ossrhPassword
 //            }
 //        }
-//    }
+        // Local repository for bundling release files
+        maven {
+            name = 'releaseBundle'
+            url = layout.buildDirectory.dir("release-bundle")
+        }
+    }
 }
 
 //signing {
 //    sign publishing.publications.mavenJava
 //}
+
+// Task to bundle all release artifacts (jars, pom, signatures, checksums)
+tasks.register('bundleReleaseFiles') {
+    group = "Distribution"
+    description = "Assembles all release artifacts into build/release-bundle"
+    dependsOn "publishMavenJavaPublicationToReleaseBundleRepository"
+}
