@@ -18,6 +18,7 @@
 package io.jactl.repl;
 
 import io.jactl.*;
+import io.jactl.resolver.Imports;
 import io.jactl.runtime.RuntimeUtils;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
@@ -40,22 +41,25 @@ public class Repl {
 
   final static String helpText =
     "Available commands:\n" +
-    "  :h       Help - print this text\n" +
-    "  :?       Alias for :h\n" +
-    "  :x       Exit\n" +
-    "  :q       Quit - alias for :x\n" +
-    "  :c       Clear current buffer\n" +
-    "  :r file  Read and execute contents of file\n" +
-    "  :l       Load - alias for :r\n" +
-    "  :s       Show variables and their values (concise form)\n" +
-    "  :S       Show variables and their values in pretty printed form\n" +
-    "  :p       Purge variables\n" +
-    "  :e arg   Enable/disable stack traces for errors (true - enable, false - disable)\n" +
-    "  :d level Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)\n" +
-    "  :H [n]   Show recent history (last n entries - defaults to 50)\n" +
-    "  :! n     Recall history entry with given number\n";
+    "  :help          Help - print this text\n" +
+    "  :?             Alias for :help\n" +
+    "  :exit          Exit\n" +
+    "  :quit          Quit - alias for :exit\n" +
+    "  :clear         Clear current buffer\n" +
+    "  :read file     Read and execute contents of file\n" +
+    "  :load          Load - alias for :read\n" +
+    "  :vars          Show variables and their values (concise form)\n" +
+    "  :show          Show variables and their values in pretty printed form\n" +
+    "  :purge         Purge variables and imports\n" +
+    "  :imports       Show imports\n" +
+    "  :java          Enable/disable Java interoperability\n" +
+    "  :stack arg     Enable/disable stack traces for errors (true - enable, false - disable)\n" +
+    "  :debug level   Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)\n" +
+    "  :history [n]   Show recent history (last n entries - defaults to 50)\n" +
+    "  :!n            Recall history entry with given number\n";
 
-  final static String commands    = "h?xqcrlsSpH!e";
+  final static List<String> commands = Utils.listOf("help", "?", "exit", "quit", "clear", "read", "load",
+                                                    "vars", "show", "purge", "history", "!", "stack", "imports", "java");
   final static String historyFile = System.getProperty("user.home") + "/.jactl_history";
 
   public static void main(String[] args) {
@@ -69,8 +73,9 @@ public class Repl {
                                          .build();
       DefaultHistory  history   = new DefaultHistory();
       SystemCompleter completer = new SystemCompleter();
-      completer.add(":r", new Completers.FileNameCompleter());
-      commands.chars().forEach(c -> completer.add(":" + (char)c, new NullCompleter()));
+      completer.add(":read", new Completers.FileNameCompleter());
+      completer.add(":load", new Completers.FileNameCompleter());
+      commands.forEach(cmd -> completer.add(":" + cmd, new NullCompleter()));
       completer.add("", new NullCompleter());
       completer.compile();
       LineReader reader = LineReaderBuilder.builder()
@@ -84,7 +89,7 @@ public class Repl {
                                            .history(history)
                                            .completer(completer)
                                            .build();
-
+      
       runRepl(context, history, reader);
     }
     catch (Exception e) {
@@ -96,51 +101,71 @@ public class Repl {
 
   private static void runRepl(JactlContext context, DefaultHistory history, LineReader reader) {
     final String       primaryPrompt   = "> ";
+    boolean            javaInteroperability = false;
     boolean            showStackTraces = false;
     Map<String,Object> globals         = new HashMap<>();
     String             buffer          = null;
     String prompt = primaryPrompt;
+    String nextLine = null;
     while (true) {
       boolean fileInput = false;
       try {
         fileInput          = false;
-        String line        = reader.readLine(prompt);
-        String trimmedLine = line.trim();
-        if (trimmedLine.isEmpty()) { continue; }
+        String line        = nextLine == null ? reader.readLine(prompt) : nextLine;
+        nextLine = null;
+        line = line.trim();
+        if (line.isEmpty()) { continue; }
 
+        
         // Check for REPL command
-        if (trimmedLine.startsWith(":")) {
-          switch(trimmedLine.charAt(1)) {
-            case 'q':  /* alias for x */
-            case 'x':  System.exit(0);
-            case 'c':  prompt = primaryPrompt; buffer = null;     continue;
-            case '?':  /* alias for h */
-            case 'h':  System.out.println("\n" + helpText);       continue;
+        if (line.startsWith(":")) {
+          String arg = line.replaceAll("^:[a-zA-Z!]+\\s*","");
+          String cmd = line.substring(1).replaceAll("^([a-zA-Z!]*).*", "$1");
+          switch(cmd) {
+            case "quit":   /* alias for exit */
+            case "exit":   System.exit(0);
+            case "clear":  prompt = primaryPrompt; buffer = null;     continue;
+            case "?":      /* alias for help */
+            case "help":   System.out.println("\n" + helpText);       continue;
           }
           if (prompt.equals(primaryPrompt)) {
-            String arg = trimmedLine.replaceAll("^:.\\s*","");
-            switch (trimmedLine.charAt(1)) {
-              case 'e': showStackTraces = Boolean.valueOf(arg);    continue;
-              case 'd': context.debugLevel(Integer.parseInt(arg)); continue;
-              case 's': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value)));           continue;
-              case 'S': globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
-              case 'p': globals.clear();   continue;
-              case 'l': /* alias for r */
-              case 'r': line = new String(Files.readAllBytes(Paths.get(arg)));  fileInput = true;  break;
-              case 'H':
+            switch (cmd) {
+              case "stack": showStackTraces = Boolean.valueOf(arg);    continue;
+              case "debug": context.debugLevel(Integer.parseInt(arg)); continue;
+              case "vars":  globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value)));           continue;
+              case "show":  globals.forEach((key, value) -> System.out.println(key + "=" + RuntimeUtils.toString(value, 2))); continue;
+              case "purge": globals.clear(); context.purgeImports();   continue;
+              case "load":  /* alias for read */
+              case "read":  line = new String(Files.readAllBytes(Paths.get(arg)));  fileInput = true;  break;
+              case "history": {
                 int count = arg.isEmpty() ? 50 : Integer.parseInt(arg);
-                int last = history.last();
+                int last  = history.last();
                 for (int i = 0; i < count; i++) {
-                  System.out.println((last-count+i) + ": " + history.get(last - count + i));
+                  System.out.println((last - count + i) + ": " + history.get(last - count + i));
                 }
                 continue;
-              case '!': {
-                int entry = Integer.parseInt(arg);
-                line = history.get(entry);
-                System.out.println(line);
-                history.add(line);
-                break;
               }
+              case "!": {
+                int entry = Integer.parseInt(arg);
+                nextLine = history.get(entry);
+                System.out.println(nextLine);
+                history.add(nextLine);
+                continue;
+              }
+              case "java": {
+                javaInteroperability = !javaInteroperability;
+                System.out.println((javaInteroperability ? "Enabling" : "Disabling") + " Java interoperability");
+                context.allowHostAccess = javaInteroperability;
+                context.allowHostClassLookup = javaInteroperability ?s -> true : s -> false;
+                continue;
+              }
+              case "imports": {
+                context.getImports().getImportStmts().forEach(System.out::println);
+                continue;
+              }
+              default:
+                System.out.println("Unrecognised command ':" + line + "'");
+                continue;
             }
           }
         }

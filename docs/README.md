@@ -98,10 +98,12 @@ Available commands:
   :l       Load - alias for :r
   :s       Show variables and their values (concise form)
   :S       Show variables and their values in pretty printed form
-  :p       Purge variables
+  :purge   Purge variables and imports
+  :imports Show imports
+  :java    Enable/disable Java interoperability
   :e arg   Enable/disable stack traces for errors (true - enable, false - disable)
-  :d level Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)
-  :H [n]   Show recent history (last n entries - defaults to 50)
+  :debug level   Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)
+  :H [n]         Show recent history (last n entries - defaults to 50)
   :! n     Recall history entry with given number
 
 >
@@ -117,7 +119,7 @@ These are the commands:
 | `:r file`<br/> `:l file` | Read/load a Jactl script file and compile and run it. Tab completion is availabe for the file name.       |
 | `:s`                     | Show all top level variables and their values.                                                            |
  | `:S`                     | Show all top level variables and pretty print their values                                                |
- | `:p`                     | Purge (delete) all variables.                                                                             |
+ | `:purge`                 | Purge (delete) all variables.                                                                             |
 | `:e arg`                 | Enable/disable stack traces for errors (true - enable, false - disable)                                   |
 | `:d level`               | Enable/disable debug output (0 - disable, 1 - enable, 2 - more detail)                                    |
  | `:H n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
