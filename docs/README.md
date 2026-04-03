@@ -83,47 +83,49 @@ The main ones to remember:
 ### Commands
 
 As well as entering Jactl code at the prompt, the REPL understands a limit set of commands that all start with `:`.
-For example, `:h` or `:?` will print out the help text listing the commands available:
+For example, `:help` or `:?` will print out the help text listing the commands available:
 ```
 $ java -jar build/libs/jactl-repl-${VERSION}.jar
-> :h
+> :help
 
 Available commands:
-  :h       Help - print this text
-  :?       Alias for :h
-  :x       Exit
-  :q       Quit - alias for :x
-  :c       Clear current buffer
-  :r file  Read and execute contents of file
-  :l       Load - alias for :r
-  :s       Show variables and their values (concise form)
-  :S       Show variables and their values in pretty printed form
-  :purge   Purge variables and imports
-  :imports Show imports
-  :java    Enable/disable Java interoperability
-  :e arg   Enable/disable stack traces for errors (true - enable, false - disable)
+  :help          Help - print this text
+  :?             Alias for :help
+  :exit          Exit
+  :quit          Quit - alias for :exit
+  :clear         Clear current buffer
+  :read file     Read and execute contents of file
+  :load          Load - alias for :read
+  :vars          Show variables and their values (concise form)
+  :show          Show variables and their values in pretty printed form
+  :purge         Purge variables and imports
+  :imports       Show imports
+  :java          Enable/disable Java interoperability
+  :stack arg     Enable/disable stack traces for errors (true - enable, false - disable)
   :debug level   Enable/disable debug output for errors (0 - off, 1 - on, 2 - more detail)
-  :H [n]         Show recent history (last n entries - defaults to 50)
-  :! n     Recall history entry with given number
+  :history [n]   Show recent history (last n entries - defaults to 50)
+  :!n            Recall history entry with given number
 
 >
 ```
 
 These are the commands:
 
-| Command                  | Description                                                                                               |
-|:-------------------------|:----------------------------------------------------------------------------------------------------------|
-| `:h` `:?`                | Print help text.                                                                                          |
-| `:x` `:q`                | Exit.                                                                                                     |
-| `:c`                     | In the middle of a multi-line statement this will clear the buffer and allow you to start again.          |
-| `:r file`<br/> `:l file` | Read/load a Jactl script file and compile and run it. Tab completion is availabe for the file name.       |
-| `:s`                     | Show all top level variables and their values.                                                            |
- | `:S`                     | Show all top level variables and pretty print their values                                                |
- | `:purge`                 | Purge (delete) all variables.                                                                             |
-| `:e arg`                 | Enable/disable stack traces for errors (true - enable, false - disable)                                   |
-| `:d level`               | Enable/disable debug output (0 - disable, 1 - enable, 2 - more detail)                                    |
- | `:H n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
- | `:! n`                   | Recall history entry `n` and evaluate it.                                                                 |
+| Command                        | Description                                                                                               |
+|:-------------------------------|:----------------------------------------------------------------------------------------------------------|
+| `:help` `:?`                   | Print help text.                                                                                          |
+| `:exit` `:quit`                | Exit.                                                                                                     |
+| `:clear`                       | In the middle of a multi-line statement this will clear the buffer and allow you to start again.          |
+| `:read file`<br/> `:load file` | Read/load a Jactl script file and compile and run it. Tab completion is availabe for the file name.       |
+| `:vars`                        | Show all top level variables and their values.                                                            |
+| `:show`                        | Show all top level variables and pretty print their values                                                |
+| `:purge`                       | Purge (delete) all variables.                                                                             |
+| `:imports`                     | List all imports                                                                                          |
+| `:java`                        | Toggle Java interoperability so scripts can access arbitrary Java classes.                                |
+| `:stack arg`                   | Enable/disable stack traces for errors (true - enable, false - disable)                                   |
+| `:debug level`                 | Enable/disable debug output (0 - disable, 1 - enable, 2 - more detail)                                    |
+| `:history n`                   | Show recent history (default 50 entries). If a value for n is given then that many entries will be shown. |
+| `:!n`                          | Recall history entry `n` and evaluate it.                                                                 |
 
 ## History File
 
