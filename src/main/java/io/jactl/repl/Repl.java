@@ -120,7 +120,7 @@ public class Repl {
         // Check for REPL command
         if (line.startsWith(":")) {
           String arg = line.replaceAll("^:[a-zA-Z!]+\\s*","");
-          String cmd = line.substring(1).replaceAll("^([a-zA-Z!]*).*", "$1");
+          String cmd = line.substring(1).replaceAll("^([a-zA-Z!?]*).*", "$1");
           switch(cmd) {
             case "quit":   /* alias for exit */
             case "exit":   System.exit(0);
