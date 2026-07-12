@@ -164,7 +164,7 @@ public class Repl {
                 continue;
               }
               default:
-                System.out.println("Unrecognised command ':" + line + "'");
+                System.out.println("Unrecognised command " + line + " (try :help to get a list of valid commands).");
                 continue;
             }
           }
